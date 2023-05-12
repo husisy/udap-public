@@ -1,6 +1,6 @@
 # README
 
-This is the repository for the paper "Variational certifier for pure-state tomography".
+This is the repository for the paper "Variational certifier for pure-state tomography". **TODO-link** **TODO-title**
 
 This is a temporary repo and we are building on a powerful package to make it more user-friendly. please stay tuned.
 
@@ -17,5 +17,4 @@ Currently, this repo provides the following functions
 conda create -y -n cuda118
 conda install -y -n cuda118 -c conda-forge pytorch ipython pytest matplotlib scipy tqdm cvxpy
 conda activate cuda118
-pip install pyqet
 ```
