@@ -7,7 +7,7 @@ This is a temporary repo and we are building on a powerful package to make it mo
 Currently, this repo provides the following functions
 
 1. determining whether a given set of measurement is UDA/UDP or not
-2. searching for the optimal measurement for a given state, see `draft_uda_udp.py/demo_search_UD_in_pauli_group()`
+2. searching for the optimal measurement for Pauli group, see `draft_uda_udp.py/demo_search_UD_in_pauli_group()`
 3. the UDA/UDP minimum set over Pauli measurements
    * `data/pauli-indexB-core.json`
    * `pauli-indexB-full.json`: put in google drive (around 100 MB)
