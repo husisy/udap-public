@@ -1,0 +1,19 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: UDA-UDP GitHub repository
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Chao
+    family-names: Zhang
+  - given-names: Xuanran
+    family-names: Zhu
+repository-code: 'https://github.com/husisy/udap-public'
+license: MIT
+commit: 018af4eb561ef1c9465bc100dbfeb2fcfa8fd94c
+version: 0.0.0
+date-released: '2023-05-14'
