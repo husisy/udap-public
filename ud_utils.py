@@ -7,7 +7,6 @@ import concurrent.futures
 import multiprocessing
 import cvxpy
 
-import numqi
 from utils import save_index_to_file, get_matrix_list_indexing
 
 # cannot be torch.linalg.norm()**2 nan when calculating the gradient when norm is almost zero
