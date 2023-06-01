@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/639765941.svg)](https://zenodo.org/badge/latestdoi/639765941)
 
-This is the repository for the paper "Variational certifier for pure-state tomography". **TODO-link** **TODO-title**
+This is the repository for the paper "A Variational Approach to Unique Determinedness in Pure-state Tomography". [arxiv-link](https://arxiv.org/abs/2305.10811)
 
 This is a temporary repo and we are building on a powerful package to make it more user-friendly. please stay tuned.
 
