@@ -84,7 +84,7 @@ st.markdown('set different random seed to generate different random pure state')
 q0 = rand_haar_state(2**num_qubit, seed=np_rng)
 st.markdown(rf'{num_qubit}-qubits pure state $|\psi\rangle$')
 tmp0 = (r'\\').join(str(x).strip('()') for x in np.round(q0,3).tolist())
-st.latex(r'|\psi=\rangle\begin{bmatrix}'+ tmp0 + r'\end{bmatrix}')
+st.latex(r'|\psi\rangle=\begin{bmatrix}'+ tmp0 + r'\end{bmatrix}')
 # st_table_numpy(q0, 1)
 button_to_randomize_seed('re-generate state')
 
@@ -149,7 +149,7 @@ if checkbox:
             st.markdown(r'the density matrix $\rho$ is too large to show, you can check the code to see the result')
         st.markdown(r"Let's calculate the fidelity between the recovered state and the original state")
         fidelity = np.vdot(q0, rho_recover @ q0).real
-        st.latex(rf'f=\langle\psi|\rho|\psi\rangle={fidelity:.3f}')
+        st.latex(rf'\langle\psi|\rho|\psi\rangle={fidelity:.3f}')
         st.markdown('If the fidelity is 1, which should always be the case without noise $f$, the recovered state is exactly the original state. ')
 
 st.subheader('What is UDA and UDP')
