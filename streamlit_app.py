@@ -104,13 +104,12 @@ print_pauli_str(UD_pauli_str)
 button_to_randomize_seed('re-generate Pauli operators')
 
 st.markdown(r'To measure these operators, simply calculate $a_i=\langle\psi|A_i|\psi\rangle+f$ for each $A_i\in\{A\}$.'
-            'where $f$ is the random measurement error')
+            'where $f$ is the random measurement error chosen from uniform distribution.')
 checkbox = st.checkbox(r"click here to perform measurement")
 if checkbox:
     tmp0 = st.slider(r'measurement error rate in log-scale $\log(f)$=', min_value=-3.0, max_value=-0.0, value=-2.0, step=0.1)
     noise_rate = 10**tmp0
     tmp1 = round(noise_rate, 3)
-    st.markdown('$f$ is chosen from uniform distribution $U(-'+str(tmp1)+','+str(tmp1)+')$')
     noise_f = np_rng.uniform(-noise_rate,noise_rate,size=len(UD_pauli_np))
     UD_pauli_measure = np.array([np.vdot(q0, x@q0) for x in UD_pauli_np]).real
 
@@ -128,6 +127,8 @@ if checkbox:
         ax.set_xticks([])
         ax.set_xlabel('Pauli operators')
     ax.set_ylabel(r'measurement $a_i$')
+    ax.legend()
+    fig.tight_layout()
     st.pyplot(fig)
     # st.markdown(r'$a_i=\langle\psi|A_i|\psi\rangle$=')
     # st_table_numpy(UD_pauli_measure, N0=6)
