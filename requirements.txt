@@ -1,0 +1,8 @@
+scipy
+torch
+streamlit
+trubrics[streamlit]
+matplotlib
+cvxpy
+pandas
+Pillow

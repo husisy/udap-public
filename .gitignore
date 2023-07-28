@@ -1,1 +1,3 @@
 __pycache__/
+.streamlit/secrets.toml
+tbd00.png
