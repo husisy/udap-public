@@ -1,6 +1,6 @@
 # README
 
-[![DOI](https://zenodo.org/badge/639765941.svg)](https://zenodo.org/badge/latestdoi/639765941)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7995116.svg)](https://doi.org/10.5281/zenodo.7995116)
 
 This is the repository for the paper "A Variational Approach to Unique Determinedness in Pure-state Tomography". [arxiv-link](https://arxiv.org/abs/2305.10811)
 
