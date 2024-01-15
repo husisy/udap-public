@@ -205,7 +205,7 @@ st.caption('Due to the limitation of computational resources, the searching algo
            'Please download code from [github-link](https://github.com/husisy/udap-public) and run locally.')
 
 st.markdown('Moreover, we can randomly sample Pauli sets and check whether they are UDA/UDP. ')
-tmp0 = PIL.Image.open('data/20230309_n_pauli_sucess_probability.png')
+tmp0 = PIL.Image.open('data/n_pauli_sucess_probability.png')
 st.image(tmp0, caption='the probability for randomly-sampled Pauli sets to be UDA/UDP')
 
 st.markdown('There are more interesting results about UDA/UDP topic,')

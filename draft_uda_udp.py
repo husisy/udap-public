@@ -95,6 +95,58 @@ def demo_search_UD_in_pauli_group():
     # z1 = check_UDA_matrix_subspace(matB_list, num_repeat=num_repeat*5, num_worker=19)
 
 
+def demo_search_UD_in_pauli_group_timing():
+    num_round = 10
+    info_list = []
+    for num_qubit in [2,3,4,5]:
+        num_repeat = {2:10, 3:10, 4:80, 5:640}[num_qubit]
+        num_random_select = {2:0, 3:10, 4:80, 5:400}[num_qubit]
+        kwargs = {'num_repeat':num_repeat,  'num_random_select':num_random_select, 'indexF':[0],
+                    'num_worker':1, 'udp_use_vector_model':True, 'tag_reduce':False, 'key':str(num_qubit),
+                    'file':'tbd00.json'}
+        matrix_subspace = get_pauli_group(num_qubit, use_sparse=True)
+        t0 = time.time()
+        z0 = find_UDP_over_matrix_basis(num_round=num_round, matrix_basis=matrix_subspace, **kwargs)
+        tmp0 = time.time()-t0
+        info_list.append((num_qubit, tmp0, len(z0)))
+    for num_qubit,tmp0,tmp1 in info_list:
+        # only count the time of successful cases
+        print(f'[#qubit={num_qubit}] TotalTime={tmp0:.3f}s, AverageTime={tmp0/tmp1:.3f}s')
+        # [#qubit=2] TotalTime=3.993s, AverageTime=0.399s
+        # [#qubit=3] TotalTime=24.778s, AverageTime=2.478s
+        # [#qubit=4] TotalTime=805.965s, AverageTime=80.597s
+        # [#qubit=5] TotalTime=50382.383s, AverageTime=8397.064s
+
+    info_list = []
+    for num_qubit in [2,3,4,5]:
+        indexB = save_index_to_file('data/pauli-indexB-core.json', str(num_qubit))[0]
+        matrix_subspace = get_pauli_group(num_qubit, use_sparse=True)
+        matB = get_matrix_list_indexing(matrix_subspace, indexB)
+        num_repeat = {2:10, 3:10, 4:80, 5:640}[num_qubit]
+        kwargs = {'num_repeat':num_repeat, 'converge_tol':1e-5, 'early_stop_threshold':1e-2,
+                'dtype':'float64', 'num_worker':1, 'udp_use_vector_model':True}
+        t0 = time.time()
+        tmp0 = check_UDP_matrix_subspace(matB, **kwargs)
+        info_list.append((num_qubit, time.time()-t0))
+        assert tmp0 #should be UDP/UDA
+    for num_qubit,tmp0 in info_list:
+        print(f'[#qubit={num_qubit}] Time={tmp0:.3f}s')
+    # [#qubit=2] Time=0.048s
+    # [#qubit=3] Time=0.057s
+    # [#qubit=4] Time=2.406s
+    # [#qubit=5] Time=25.175s
+
+    # #qubit, time (s)
+    # #qubit=2, 0.05/0.4
+    # #qubit=3, 0.06/2.5
+    # #qubit=4, 2.4/81
+    # #qubit=3, 25/8400
+
+    # CAPTION: in the time column, $t1/t2$ denotes the typical time required
+    # to perform one round UDP certification and searching minimum set respectively.
+
+
+
 def demo_pauli_2qubit_loss_function():
     matB = pauli_str_to_matrix('II IX IY IZ XI YX YY YZ ZX ZY ZZ')
     assert matB.shape==(11,4,4)
@@ -118,29 +170,38 @@ def demo_pauli_2qubit_loss_function():
 
 def demo_ud_over_pauli_probability():
     # time required (mac-studio,1cpu,1sample,float32): 6s(n=3) 9s(n=4) 20s(n=5) 120s(n=6) 1000s(n=7)
-    tmp0 = np.linspace(0,1,32)[1:-1]
-    exp_parameter_list = sorted(set([(x,int(y)) for x in [3,4,5,6,7] for y in (4**x)*tmp0]))
-    num_sample = 19*10
-    np_rng = np.random.default_rng()
-    hyper_parameter = {'num_repeat':80, 'converge_tol':1e-7, 'early_stop_threshold':1e-5,
-                'dtype':'float64', 'num_worker':19, 'udp_use_vector_model':True}
-    all_data = []
-    time_start = time.time()
-    for num_qubit,num_op in exp_parameter_list:
-        tmp0 = time.time() - time_start
-        print(f'[{tmp0:.1f}s] {num_qubit=} {num_op=}')
-        matrix_subspace = get_pauli_group(num_qubit, use_sparse=True)
-        matB_list = []
-        for _ in range(num_sample):
-            index = np.zeros(num_op, dtype=np.int64) #first element must be identity
-            index[1:] = np.sort(np_rng.permutation(len(matrix_subspace)-1)[:(num_op-1)])+1
-            matB_list.append(get_matrix_list_indexing(matrix_subspace, index))
-        tmp0 = check_UDP_matrix_subspace(matB_list, **hyper_parameter)
-        all_data.append([x[1] for x in tmp0])
-    all_data = np.array(all_data)
-    # tmp0 = {'exp_parameter_list':exp_parameter_list, 'hyper_parameter':hyper_parameter, 'num_sample':num_sample, 'all_data':all_data}
-    # with open('data/20230309_n_pauli_sucess_probability.pkl', 'wb') as fid:
-    #     pickle.dump(tmp0, fid)
+    datapath = 'data/n_pauli_sucess_probability.pkl'
+    if os.path.exists(datapath):
+        with open(datapath, 'rb') as fid:
+            tmp0 = pickle.load(fid)
+            exp_parameter_list = tmp0['exp_parameter_list']
+            hyper_parameter = tmp0['hyper_parameter']
+            num_sample = tmp0['num_sample']
+            all_data = tmp0['all_data']
+    else:
+        tmp0 = np.linspace(0,1,32)[1:-1]
+        exp_parameter_list = sorted(set([(x,int(y)) for x in [3,4,5,6,7] for y in (4**x)*tmp0]))
+        num_sample = 19*10
+        np_rng = np.random.default_rng()
+        hyper_parameter = {'num_repeat':80, 'converge_tol':1e-7, 'early_stop_threshold':1e-5,
+                    'dtype':'float64', 'num_worker':19, 'udp_use_vector_model':True}
+        all_data = []
+        time_start = time.time()
+        for num_qubit,num_op in exp_parameter_list:
+            tmp0 = time.time() - time_start
+            print(f'[{tmp0:.1f}s] {num_qubit=} {num_op=}')
+            matrix_subspace = get_pauli_group(num_qubit, use_sparse=True)
+            matB_list = []
+            for _ in range(num_sample):
+                index = np.zeros(num_op, dtype=np.int64) #first element must be identity
+                index[1:] = np.sort(np_rng.permutation(len(matrix_subspace)-1)[:(num_op-1)])+1
+                matB_list.append(get_matrix_list_indexing(matrix_subspace, index))
+            tmp0 = check_UDP_matrix_subspace(matB_list, **hyper_parameter)
+            all_data.append([x[1] for x in tmp0])
+        all_data = np.array(all_data)
+        tmp0 = {'exp_parameter_list':exp_parameter_list, 'hyper_parameter':hyper_parameter, 'num_sample':num_sample, 'all_data':all_data}
+        with open(datapath, 'wb') as fid:
+            pickle.dump(tmp0, fid)
 
     key_list = sorted({x[0] for x in exp_parameter_list})
     key_list.pop(-1) #bad data
@@ -155,17 +216,18 @@ def demo_ud_over_pauli_probability():
     for key_i in key_list:
         tmp0,tmp1 = all_data_dict[key_i]
         ax.plot(tmp0*100/(4**key_i), (tmp1>threshold).mean(axis=1), marker='.', label=f'n={key_i}')
-    ax.set_xlabel('#pauli-op (percent)')
-    ax.set_ylabel('probability')
+    ax.set_xlabel('#pauli-op (percent)', fontsize=14)
+    ax.set_ylabel('probability', fontsize=14)
     # ax.set_ylabel(r'$\mathrm{mean}(\mathcal{L}_{1,1})$')
     # ax.set_title(f'#sample={num_sample} threshold={threshold}')
     ax.grid()
     ax.set_xlim(0, 100)
     ax.set_ylim(-0.1, 1.1)
     fig.tight_layout()
-    ax.legend()
-    fig.savefig('tbd00.png', dpi=200)
-    # fig.savefig('data/20230309_n_pauli_sucess_probability.png', dpi=200)
+    ax.legend(fontsize=14)
+    # fig.savefig('tbd00.png', dpi=200)
+    fig.savefig('data/n_pauli_sucess_probability.png', dpi=200)
+    fig.savefig('data/n_pauli_sucess_probability.pdf')
 
 
 def demo_pauli_stability():
@@ -435,3 +497,6 @@ def demo_UDA_worst_case():
     fig.tight_layout()
     fig.savefig('tbd00.png', dpi=200)
     # fig.savefig('data/5PB_worst_case_dim.png', dpi=200)
+
+if __name__=='__main__':
+    demo_search_UD_in_pauli_group_timing()
