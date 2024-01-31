@@ -6,7 +6,10 @@ import pickle
 import numpy as np
 import torch
 from tqdm import tqdm
+import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.rcParams['text.usetex'] = True
+matplotlib.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
 
 from utils import save_index_to_file, get_pauli_group, get_matrix_list_indexing, pauli_str_to_matrix, get_fidelity, rand_haar_state
 from ud_utils import (check_UDA_matrix_subspace, check_UDP_matrix_subspace, find_UDP_over_matrix_basis, get_UDA_theta_optim_special_EVC,
@@ -213,10 +216,11 @@ def demo_ud_over_pauli_probability():
 
     threshold = 0.01
     fig,ax = plt.subplots(figsize=(5,4))
-    for key_i in key_list:
+    marker_list = list('.+x*')
+    for ind0,key_i in enumerate(key_list):
         tmp0,tmp1 = all_data_dict[key_i]
-        ax.plot(tmp0*100/(4**key_i), (tmp1>threshold).mean(axis=1), marker='.', label=f'n={key_i}')
-    ax.set_xlabel('#pauli-op (percent)', fontsize=14)
+        ax.plot(tmp0*100/(4**key_i), (tmp1>threshold).mean(axis=1), marker=marker_list[ind0], linewidth=1, markersize=7, label=f'n={key_i}')
+    ax.set_xlabel(r'No. of Pauli operators (\%)', fontsize=14)
     ax.set_ylabel('probability', fontsize=14)
     # ax.set_ylabel(r'$\mathrm{mean}(\mathcal{L}_{1,1})$')
     # ax.set_title(f'#sample={num_sample} threshold={threshold}')
@@ -499,4 +503,5 @@ def demo_UDA_worst_case():
     # fig.savefig('data/5PB_worst_case_dim.png', dpi=200)
 
 if __name__=='__main__':
-    demo_search_UD_in_pauli_group_timing()
+    # demo_search_UD_in_pauli_group_timing()
+    demo_ud_over_pauli_probability()

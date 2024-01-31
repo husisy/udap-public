@@ -1,6 +1,9 @@
 import pickle
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.rcParams['text.usetex'] = True
+matplotlib.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
 
 cp_tableau = ['#006BA4', '#FF800E', '#ABABAB', '#595959', '#5F9ED1', '#C85200', '#898989', '#A2C8EC', '#FFBC79', '#CFCFCF']
 
@@ -27,7 +30,7 @@ def demo_5PB_stability():
     FONTSIZE = 20
 
     for ax in [ax0,ax1]:
-        ax.set_xlabel(r'$||f||_2$', fontsize=FONTSIZE)
+        ax.set_xlabel(r'$\lVert f\rVert_2$', fontsize=FONTSIZE)
         ax.set_xscale('log')
         ax.set_yscale('log')
     data = data_figa['data']
@@ -44,7 +47,7 @@ def demo_5PB_stability():
         tmp1 = data[ind0,2] / (data[ind0,0] + data[ind0,1])
         ax1.fill_between(tmp0, tmp1.min(axis=1), tmp1.max(axis=1), alpha=0.2, color=cp_tableau[ind0])
         ax1.plot(tmp0, tmp1.mean(axis=1), color=cp_tableau[ind0], label=tmp2, marker=marker_list[ind0], markersize=12)
-    ax0.set_ylabel(r'$|| \mathcal{M}_\mathbf{A}(Y^*)-b ||_2$', fontsize=FONTSIZE)
+    ax0.set_ylabel(r'$\lVert \mathcal{M}_\mathbf{A}(Y^*)-b \rVert_2$', fontsize=FONTSIZE)
     ax1.set_ylabel(r'stability coefficient', fontsize=FONTSIZE)
     ax0.text(7e-4, 6e-7, '(a)', horizontalalignment='center', verticalalignment='center', fontsize=FONTSIZE)
     ax1.text(1.3e-6, 0.35, '(b)', horizontalalignment='center', verticalalignment='center', fontsize=FONTSIZE)
@@ -57,7 +60,6 @@ def demo_5PB_stability():
     ax1.yaxis.tick_right()
     ax1.yaxis.set_label_position('right')
     ax0.set_ylim(3.84e-7, 1.3e-3)
-    print('[zc/ax0.ylim]', ax0.get_ylim())
 
     # ax1.plot(data_figd1['dim_list'], data_figd1['uda_5pb_loss_list'], color=cp_tableau[0], linestyle='solid', label='5PB UDA')
     # ax1.plot(data_figd1['dim_list'], data_figd1['udp_4pb_loss_list'], color=cp_tableau[1], linestyle='solid', label='4PB UDP')
@@ -109,10 +111,9 @@ def demo_5PB_stability():
     ax2.text(8.8, 0.2, '(c)', horizontalalignment='center', verticalalignment='center', fontsize=FONTSIZE)
     ax2.legend(loc='upper left', fontsize=FONTSIZE-6)
     ax2.tick_params(axis='both', which='major', labelsize=FONTSIZE-5)
-    print('[zc]', ax2.get_ylim())
     # ax2.yaxis.tick_right()
     # ax2.yaxis.set_label_position('right')
-    # ax.set_title(r'5PaB worst case, $||f||_2=' + f'{noise_rate:.2g}$')
+    # ax.set_title(r'5PaB worst case, $\lVert f\rVert_2=' + f'{noise_rate:.2g}$')
 
 
     # exp_parameter_list = data_figd['exp_parameter_list']
@@ -147,6 +148,7 @@ def demo_5PB_stability():
 
 
 def demo_pauli_stability():
+    print('zcdebug')
     with open('data/pauli_qubit4_noise_rate.pkl', 'rb') as fid:
         data_figa = pickle.load(fid)
         # data num_random num_qubit noise_rate_list cvxpy_eps state_list theta_optim
@@ -170,7 +172,7 @@ def demo_pauli_stability():
         tmp1 = data[ind0,2] / (data[ind0,0] + data[ind0,1])
         ax1.fill_between(tmp0, tmp1.min(axis=1), tmp1.max(axis=1), alpha=0.2, color=cp_tableau[ind0])
         ax1.plot(tmp0, tmp1.mean(axis=1), color=cp_tableau[ind0], label=tmp2, marker=marker_list[ind0], markersize=12)
-    ax0.set_ylabel(r'$|| \mathcal{M}_\mathbf{A}(Y^*)-b ||_2$', fontsize=FONTSIZE)
+    ax0.set_ylabel(r'$\lVert \mathcal{M}_\mathbf{A}(Y^*)-b \rVert_2$', fontsize=FONTSIZE)
     ax1.set_ylabel(r'stability coefficient', fontsize=FONTSIZE)
     ax0.text(9.2e-4, 8e-7, '(a)', horizontalalignment='center', verticalalignment='center', fontsize=FONTSIZE)
     ax1.text(1.2e-6, 0.08, '(b)', horizontalalignment='center', verticalalignment='center', fontsize=FONTSIZE)
@@ -179,7 +181,7 @@ def demo_pauli_stability():
     ax1.tick_params(axis='both', which='major', labelsize=FONTSIZE-5)
     # 1/np.sqrt(data_figa['theta_optim'].fun)
     for ax in [ax0,ax1]:
-        ax.set_xlabel(r'$||f||_2$', fontsize=FONTSIZE)
+        ax.set_xlabel(r'$\lVert f \rVert_2$', fontsize=FONTSIZE)
         ax.set_xscale('log')
         ax.set_yscale('log')
     ax0.legend(fontsize=FONTSIZE-4)
@@ -202,14 +204,14 @@ def demo_pauli_stability():
     ax2.set_xticks(num_qubit_list)
     ax2.set_xlim(1.7, 5.3)
     # ax2.set_yscale('log')
-    ax2.set_xlabel('#qubits', fontsize=FONTSIZE)
+    ax2.set_xlabel('No. of qubits', fontsize=FONTSIZE)
     ax2.set_ylabel(r'stability coefficient', fontsize=FONTSIZE)
     ax2.text(5.1, 0.4, '(c)', horizontalalignment='center', verticalalignment='center', fontsize=FONTSIZE)
     ax2.legend(loc='upper left', fontsize=FONTSIZE-7)
     ax2.tick_params(axis='both', which='major', labelsize=FONTSIZE-4)
     # ax2.yaxis.tick_right()
     # ax2.yaxis.set_label_position('right')
-    # ax.set_title(r'5PaB worst case, $||f||_2=' + f'{noise_rate:.2g}$')
+    # ax.set_title(r'5PaB worst case, $\lVert f\rVert_2=' + f'{noise_rate:.2g}$')
 
     num_qubit_list = data_figc['num_qubit_list']
     num_qubit_to_data_dict = data_figc['num_qubit_to_data_dict']
@@ -219,7 +221,7 @@ def demo_pauli_stability():
         ax3.fill_between(num_qubit_list, tmp0.min(axis=1), tmp0.max(axis=1), alpha=0.2, color=cp_tableau[ind0])
         tmp1 = r'$|\psi_-\rangle$' if ind0==0 else r'$\sigma_'+f'{ind0-1}$'
         ax3.plot(num_qubit_list, tmp0.mean(axis=1), '-', color=cp_tableau[ind0], label=tmp1, marker=marker_list[ind0], markersize=12)
-    ax3.set_xlabel('#qubits', fontsize=FONTSIZE)
+    ax3.set_xlabel('No. of qubits', fontsize=FONTSIZE)
     ax3.set_ylabel(r'fidelity', fontsize=FONTSIZE)
     ax3.text(2.2, 0.999958, '(d)', horizontalalignment='center', verticalalignment='center', fontsize=FONTSIZE)
     ax3.legend(loc='lower right', fontsize=FONTSIZE-6)
@@ -228,7 +230,7 @@ def demo_pauli_stability():
     ax3.tick_params(axis='both', which='major', labelsize=FONTSIZE-5)
 
     fig.tight_layout()
-    fig.savefig('tbd00.png', dpi=200)
+    fig.savefig('data/pauli_worst_case.png', dpi=200)
     fig.savefig('data/pauli_worst_case.pdf')
 
 def demo_UDA_UDP_eigenvalue():
@@ -294,10 +296,10 @@ def compare_3PB_4PB_5PB():
         # hyperparameter dim_list uda_4pb_loss_list uda_5pb_loss_list udp_4pb_loss_list udp_5pb_loss_list
 
     fig,(ax0,ax1) = plt.subplots(1,2,figsize=(8,4))
-    ax0.plot(dim_list, udp_4pb_loss_list, label='4PB', marker='.', markersize=8)
-    ax0.plot(dim_list, udp_3pb_loss_list, label='3PB', marker='x', markersize=8)
-    ax1.plot(dim_list, uda_5pb_loss_list, label='5PB', marker='.', markersize=8)
-    ax1.plot(dim_list, uda_4pb_loss_list, label='4PB', marker='x', markersize=8)
+    ax0.plot(dim_list, udp_4pb_loss_list, label='4PBs', marker='.', markersize=8)
+    ax0.plot(dim_list, udp_3pb_loss_list, label='3PBs', marker='x', markersize=8)
+    ax1.plot(dim_list, uda_5pb_loss_list, label='5PBs', marker='.', markersize=8)
+    ax1.plot(dim_list, uda_4pb_loss_list, label='4PBs', marker='x', markersize=8)
     for ax in [ax0,ax1]:
         ax.set_xlabel('qudit $d$', fontsize=20)
         ax.legend(fontsize=18)
@@ -307,6 +309,8 @@ def compare_3PB_4PB_5PB():
         ax.set_ylim(3e-14, 0.4)
     ax0.set_ylabel(r'UDP loss function', fontsize=20)
     ax1.set_ylabel(r'UDA loss function', fontsize=20)
+    ax0.text(8.8, 2e-13, '(a)', horizontalalignment='center', verticalalignment='center', fontsize=18)
+    ax1.text(8.8, 2e-13, '(b)', horizontalalignment='center', verticalalignment='center', fontsize=18)
     ax1.yaxis.tick_right()
     ax1.yaxis.set_label_position('right')
     fig.tight_layout()
@@ -316,6 +320,6 @@ def compare_3PB_4PB_5PB():
 
 
 if __name__=='__main__':
-    # demo_5PB_stability()
+    demo_5PB_stability()
     demo_pauli_stability()
     # compare_3PB_4PB_5PB()
