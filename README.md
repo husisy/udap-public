@@ -4,7 +4,7 @@
 
 This is the repository for the paper "A Variational Approach to Unique Determinedness in Pure-state Tomography". [arxiv-link](https://arxiv.org/abs/2305.10811)
 
-This is a temporary repo and we are building on a powerful package to make it more user-friendly. please stay tuned.
+🚀 Exciting News! We've launched the `numqi` package [github/numqi](https://github.com/husisy/numqi), combining all the functionalities of this repository and even more! 🌟 To dive into these features, just install `numqi` using `pip install numqi`, and explore the relevant functions within the `numqi.unique_determine` module. 🛠️
 
 Currently, this repo provides the following functions
 
